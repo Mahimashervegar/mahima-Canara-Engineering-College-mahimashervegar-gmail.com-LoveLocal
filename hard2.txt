@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Function to reverse a string
+void reverseString(char* str) {
+    int length = strlen(str);
+    for (int i = 0, j = length - 1; i < j; i++, j--) {
+        char temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+    }
+}
+
+// Function to find the shortest palindrome by adding characters in front
+char* shortestPalindrome(char* s) {
+    if (s == NULL || strlen(s) == 0) {
+        return s;
+    }
+
+    // Create a new string with the reversed version of s
+    int n = strlen(s);
+    char* reversed = (char*)malloc((2 * n + 1) * sizeof(char));
+    strcpy(reversed, s);
+    strcat(reversed, "$");
+    reverseString(s);
+    strcat(reversed, s);
+
+    // Build the KMP table
+    int* kmpTable = (int*)malloc((2 * n + 1) * sizeof(int));
+    kmpTable[0] = 0;
+
+    for (int i = 1, j = 0; i < 2 * n + 1;) {
+        if (reversed[i] == reversed[j]) {
+            kmpTable[i++] = ++j;
+        } else if (j > 0) {
+            j = kmpTable[j - 1];
+        } else {
+            kmpTable[i++] = 0;
+        }
+    }
+
+    // Find the length of the longest palindrome suffix in the reversed string
+    int longestPalindromeSuffixLength = kmpTable[2 * n];
+
+    // Append the remaining characters in front to form the shortest palindrome
+    char* result = (char*)malloc((n + longestPalindromeSuffixLength + 1) * sizeof(char));
+    strcpy(result, s + longestPalindromeSuffixLength);
+    reverseString(s);
+    strcat(result, s);
+
+    free(reversed);
+    free(kmpTable);
+
+    return result;
+}
+
+int main() {
+    // Input the string from the keyboard
+    printf("Enter a string: ");
+    char input[100];
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = '\0'; // Remove the newline character
+
+    // Find the shortest palindrome
+    char* result = shortestPalindrome(input);
+
+    // Display the result
+    printf("output: %s\n", result);
+
+    free(result); // Free allocated memory
+
+    return 0;
+}
