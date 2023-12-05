@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <string.h>
+
+int lengthOfLastWord(const char *s) {
+    // Find the length of the string
+    int length = strlen(s);
+
+    // Initialize a variable to store the length of the last word
+    int lengthLastWord = 0;
+
+    // Iterate through the string in reverse order
+    for (int i = length - 1; i >= 0; i--) {
+        // Break the loop when a space is encountered
+        if (s[i] == ' ') {
+            break;
+        }
+
+        // Increment the length of the last word
+        lengthLastWord++;
+    }
+
+    return lengthLastWord;
+}
+
+int main() {
+    // Example usage:
+    const char *inputString = "Hello World";
+    int result = lengthOfLastWord(inputString);
+
+    printf("Length of the last word: %d\n", result);
+
+    return 0;
+}
